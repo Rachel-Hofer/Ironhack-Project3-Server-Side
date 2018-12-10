@@ -5,7 +5,7 @@ const Schema   = mongoose.Schema;
 const propertySchema = new Schema({
   image: String,
   address: String,
-  features: {type: Array, enum: ['lights', 'figurines', 'music', 'carolers', 'hot chocolate']},
+  features: {type: Array, enum: ['lights', 'decorations', 'music', 'carolers', 'holiday beverages']},
   averageRating: Number
   });
 
