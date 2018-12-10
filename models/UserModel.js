@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 const Schema   = mongoose.Schema;
 
 
-const UserSchema = new Schema({
-
-
-
-
+const userSchema = new Schema({
     email: String,
     password: String,
     fullName: String,
@@ -14,11 +10,10 @@ const UserSchema = new Schema({
     propertiesOwned: {type: [Schema.Types.ObjectId], default : [], ref: 'Property'},
     propertiesViewed: {type: [Schema.Types.ObjectId], default : [], ref: 'Property'},
     owner: Boolean
-
   });
 
   
-  const User = mongoose.model("User", UserSchema);
+  const User = mongoose.model("User", userSchema);
   
   
   module.exports = User;
