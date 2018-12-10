@@ -53,6 +53,7 @@ app.use('/', index);
 const userRoutes = require('./routes/userRoutes');
 app.use('/api', userRoutes);
 
-
+const propertyRoutes = require('./routes/propertyRoutes');
+app.use('/api', propertyRoutes);
 
 module.exports = app;
