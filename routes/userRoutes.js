@@ -43,7 +43,7 @@ router.get('/user/:id', (req,res,next)=>{
     User.findById(req.params.id)
         .then((response) =>{
             if(response === null){
-                res.json({message: 'sorry we could not find this user'})
+                res.json({message: 'sorry we could not find this User'})
                 return;
             }
             res.json(response)
