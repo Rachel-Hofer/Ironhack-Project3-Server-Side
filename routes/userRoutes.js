@@ -23,7 +23,7 @@ router.get('/all-users', (req,res,next) =>{
 
 
 // Create user
-// /api/create-user
+// /api/signup-user
 router.post('/signup-user',  uploader.single('the-picture'), (req, res, next) => {
     User.findOne({email: req.body.theEmail })
     .then((findedUser) =>{
@@ -39,7 +39,8 @@ router.post('/signup-user',  uploader.single('the-picture'), (req, res, next) =>
             email    : req.body.theEmail,
             password : theHash,
             fullName : req.body.theFullName,
-            image    : req.file.url        
+            image    : req.file.url,
+            zipCode  : req.body.zipCode    
         })
         .then((theUser) =>{
             req.login(theUser, (err) =>{

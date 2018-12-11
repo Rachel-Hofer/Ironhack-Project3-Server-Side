@@ -6,7 +6,7 @@ const axios = require('axios');
 
 const uploader  = require('../config/cloud');
 
-// View for all properties
+// GET all properties
 // /api/all-properties
 // tested and working
 router.get('/all-properties', (req,res,next) =>{
@@ -19,47 +19,63 @@ router.get('/all-properties', (req,res,next) =>{
     })
 });
 
-// axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=${process.env.googleMapsAPI}`)
-//     .then((response)=>{
-//         console.log("RESPONSE.DATA<><><><><><><>", response.data.results[0].formatted_address)
-//     .catch((err)=>{
-//         console.log(err)
-//     })
-// })
+// *************************************************************************************
+// use same GET for all properties(above), then SORT ON THE FRONT END by average Rating
+// *************************************************************************************
 
-// View for all properties in specific zip code
-// /api/all-properties-by-zipCode/:zipCode
-// still working on this one **
-router.get('/all-properties-by-zipCode', (req,res,next) =>{
-    Property.find({zipCode : req.body.zipCode})
+
+// POST to get all properties by searched zipCode
+// /api/all-properties-searched-zipCode
+// 
+router.post('/all-properties-searched-zipCode', (req,res,next) =>{
+    let searchedZipCode = req.body.zipCode
+    if(searchedZipCode === null){
+        res.json({message: 'Sorry, you must enter a zip code to search. Please try again.'})
+        return
+    }
+    if(searchedZipCode !== Number){
+        res.json({message: 'Sorry, you must enter a numerical zip code to search. Please try again.'})
+        return
+    }
+        Property.find({zipCode: searchedZipCode})
+            .then((allProperties) =>{
+                res.json(allProperties)
+        })
+            .catch((err)=>{
+                res.json(err)
+        })
+});  // end of all properties by searched zipCode
+
+
+// GET all properties in USERS zipCode - //"Find lights near me"
+// /api/all-properties-user-zipCode
+// tested and working
+router.get('/all-properties-user-zipCode', (req,res,next) =>{
+    let theZipCode = req.user.zipCode;
+    Property.find({zipCode: theZipCode})
     .then((allProperties) =>{
         res.json(allProperties)
     })
     .catch((err)=>{
         res.json(err)
     })
-});
+});  // end of view ALL properties route
 
 
 // Creates property
 // /api/create-property
 // tested and working
-
-
-
-
 router.post('/create-property', uploader.single('the-picture'), (req, res, next) => {
     axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}&key=${process.env.googleMapsAPI}`)
     .then((response)=>{
-        console.log("RESPONSE.DATA<><><><><><><>", response.data.results[0].formatted_address)
-
         Property.create({
             image: req.file.url,
             address: response.data.results[0].formatted_address, //to get full address from Google API
             features: req.body.features,
             review: req.body.review,
             creator: req.user._id, // cannot test until logged-in
-            averageRating: req.body.averageRating
+            averageRating: req.body.averageRating,
+            zipCode: response.data.results[0].address_components[7].long_name
         })
             .then((createdProperty) =>{
                 User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }}).populate('propertiesCreated')
@@ -79,7 +95,7 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
     })
     .catch((err)=>{
     })
-})
+})  // end of create new property route
 
 
 // View for single property
@@ -97,21 +113,23 @@ router.get('/property/:id', (req,res,next)=>{
         .catch((err) =>{
             res.json([{message: 'Sorry, we could not find this Property. Please try another address.'}, err])
         })
-});
+});  // end of view single property route
 
 
 // Edits property
 // /api/edit-property/:id
 // tested and working
 router.post('/edit-property/:id', uploader.single('the-picture') , (req,res,next) =>{
-    Property.findByIdAndUpdate(req.params.id, {
-        image: req.file.url,
-        address: req.body.address,
-        zipCode: req.body.zipCode,
-        features: req.body.features,
-        review: req.body.review,
-        creator: req.user._id, // cannot test until logged-in
-        averageRating: req.body.averageRating
+    axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}&key=${process.env.googleMapsAPI}`)
+    .then((response)=>{
+        Property.findByIdAndUpdate(req.params.id, {
+            image: req.file.url,
+            address: response.data.results[0].formatted_address,
+            features: req.body.features,
+            review: req.body.review,
+            creator: req.user._id, // cannot test until logged-in
+            averageRating: req.body.averageRating,
+            zipCode: response.data.results[0].address_components[7].long_name
     })
         .then((response) =>{
             if(response === null){ 
@@ -123,7 +141,11 @@ router.post('/edit-property/:id', uploader.single('the-picture') , (req,res,next
         .catch((err) =>{
             res.json([{message: 'Sorry, we could not find this Property. Please try another address.'}, err])
         })
-});
+    .catch((err)=>{
+        res.json(err)
+    })
+    })
+}); // end of edit property route
 
 
 // Deletes property
@@ -145,7 +167,7 @@ router.post('/delete-property/:id', (req, res, next)=>{
     .catch((err)=>{
         res.json([{message: 'sorry this property could not be found'}, err])
     })
-})
+});  // end of delete property route
 
 
 module.exports = router;
