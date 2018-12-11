@@ -2,6 +2,8 @@ const express = require('express');
 const router  = express.Router();
 const Property = require('../models/Property');
 
+const uploader  = require('../config/cloud');
+
 // View for all properties
 // /api/all-properties
 // tested and working
@@ -33,9 +35,9 @@ router.get('/all-properties-by-zipCode', (req,res,next) =>{
 // Creates property
 // /api/create-property
 // tested and working
-router.post('/create-property', (req, res, next) => {
+router.post('/create-property', uploader.single('the-picture') ,(req, res, next) => {
     Property.create({
-        image: req.body.image,
+        image: req.file.url,
         address: req.body.address,
         zipCode: req.body.zipCode,
         features: req.body.features,
@@ -73,9 +75,9 @@ router.get('/property/:id', (req,res,next)=>{
 // Edits property
 // /api/edit-property/:id
 // tested and working
-router.post('/edit-property/:id', (req,res,next) =>{
+router.post('/edit-property/:id', uploader.single('the-picture') , (req,res,next) =>{
     Property.findByIdAndUpdate(req.params.id, {
-        image: req.body.image,
+        image: req.file.url,
         address: req.body.address,
         zipCode: req.body.zipCode,
         features: req.body.features,

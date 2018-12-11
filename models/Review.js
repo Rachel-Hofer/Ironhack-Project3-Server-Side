@@ -6,7 +6,8 @@ const reviewSchema = new Schema({
     author: {type: Schema.Types.ObjectId, ref: 'User'},
     property: {type: Schema.Types.ObjectId, ref: 'Property'},
     message: String,
-    rating: Number
+    rating: Number,
+    likes : Number,
   });
 
   
