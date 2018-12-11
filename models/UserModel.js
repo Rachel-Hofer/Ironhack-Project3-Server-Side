@@ -7,9 +7,9 @@ const userSchema = new Schema({
     password: String,
     fullName: String,
     image: String,
-    propertiesOwned: {type: [Schema.Types.ObjectId], default : [], ref: 'Property'},
+    propertiesCreated: {type: [Schema.Types.ObjectId], default : [], ref: 'Property'},
     propertiesViewed: {type: [Schema.Types.ObjectId], default : [], ref: 'Property'},
-    owner: Boolean
+    
   });
 
   
