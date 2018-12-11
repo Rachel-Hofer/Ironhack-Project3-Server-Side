@@ -20,11 +20,11 @@ router.get('/all-reviews', (req,res,next) =>{
 
 // View for all reviews of ONE property
 // /api/all-reviews/:property._id
-// **HAVE TO FIGURE OUT HOW TO LINK PROPERTY ID to PROPERTY KEY**
+// tested and working
 router.get('/all-reviews/:property._id', (req,res,next) =>{
-    Property.find()
-    .then((allProperties) =>{
-        res.json(allProperties)
+    Review.find()
+    .then((allReviews) =>{
+        res.json(allReviews)
     })
     .catch((err)=>{
         res.json(err)
