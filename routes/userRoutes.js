@@ -25,7 +25,7 @@ router.get('/all-users', (req,res,next) =>{
 
 // Create user
 // /api/create-user
-router.post('/create-user', (req, res, next) => {
+router.post('/signup-user', (req, res, next) => {
 
     User.findOne({email: req.body.theEmail })
     .then((findedUser) =>{
@@ -60,6 +60,7 @@ router.post('/create-user', (req, res, next) => {
         res.json({message: 'something is really bad'})
     })
 });
+
 
 
 // View for single user
@@ -117,7 +118,47 @@ router.post('/edit-user/:id', (req,res,next) =>{
 });
 
 
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, theUser, failureDetails) => {
+        if (err) {
+            res.json({ message: 'Something went wrong authenticating user' });
+            return;
+        }
+    
+        if (!theUser) {
+            // "failureDetails" contains the error messages
+            // from our logic in "LocalStrategy" { message: '...' }.
+            res.json(failureDetails);
+            return;
+        }
 
+        // save user in session
+        req.login(theUser, (err) => {
+            if (err) {
+                res.json({ message: 'Session save went bad.' });
+                return;
+            }
+
+            // We are now logged in (that's why we can also send req.user)
+            res.json(theUser);
+        });
+    })(req, res, next);
+});
+
+router.post('/logout', (req, res, next) => {
+    // req.logout() is defined by passport
+    req.logout();
+    res.json({ message: 'Log out success!' });
+});
+
+router.get('/loggedin', (req, res, next) => {
+    // req.isAuthenticated() is defined by passport
+    if (req.isAuthenticated()) {
+        res.json(req.user);
+        return;
+    }
+    res.status(500).json({ message: 'Unauthorized' });
+});
 
 
 
