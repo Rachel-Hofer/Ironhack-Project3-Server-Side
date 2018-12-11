@@ -37,8 +37,8 @@ router.get('/all-reviews/:property._id', (req,res,next) =>{
 // tested and working
 router.post('/create-review', (req, res, next) => {
     Review.create({
-        // author: req.user._id, cannot test until logged-in
-        // property: property_.id??,
+        author: req.user._id, // cannot test until logged-in
+        property: req.body.property,
         message: req.body.message,
         rating: req.body.rating
     })
@@ -56,8 +56,8 @@ router.post('/create-review', (req, res, next) => {
 // tested and working
 router.post('/edit-review/:id', (req,res,next) =>{
     Review.findByIdAndUpdate(req.params.id, {
-        // author: req.user._id, cannot test until logged-in
-        // property: property_.id??,
+        author: req.user._id, // cannot test until logged-in
+        property: req.body.property,
         message: req.body.message,
         rating: req.body.rating
     })
