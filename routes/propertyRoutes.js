@@ -55,7 +55,7 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
 
         Property.create({
             image: req.file.url,
-            address: response.data.results[0].formatted_address,
+            address: response.data.results[0].formatted_address, //to get full address from Google API
             features: req.body.features,
             review: req.body.review,
             creator: req.user._id, // cannot test until logged-in
