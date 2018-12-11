@@ -1,13 +1,9 @@
 const express  = require('express');
 const router   = express.Router();
-
 const bcrypt   = require('bcryptjs');
 const passport = require('passport');
 
 const User    = require('../models/UserModel');
-
-
-
 
 
 // List all users
@@ -159,7 +155,6 @@ router.get('/loggedin', (req, res, next) => {
     }
     res.status(500).json({ message: 'Unauthorized' });
 });
-
 
 
 
