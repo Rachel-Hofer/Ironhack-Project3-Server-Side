@@ -39,8 +39,8 @@ router.post('/create-property', (req, res, next) => {
         address: req.body.address,
         zipCode: req.body.zipCode,
         features: req.body.features,
-        // review: req.review._id,
-        // creator: req.user._id,
+        review: req.body.review,
+        creator: req.user._id, // cannot test until logged-in
         averageRating: req.body.averageRating
     })
     .then((response) =>{
@@ -79,8 +79,8 @@ router.post('/edit-property/:id', (req,res,next) =>{
         address: req.body.address,
         zipCode: req.body.zipCode,
         features: req.body.features,
-        // review: req.review._id,
-        // creator: req.user._id, cannot test until logged-in
+        review: req.body.review,
+        creator: req.user._id, // cannot test until logged-in
         averageRating: req.body.averageRating
     })
         .then((response) =>{
