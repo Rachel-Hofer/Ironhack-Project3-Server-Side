@@ -54,35 +54,29 @@ router.get('/user/:id', (req,res,next)=>{
 });
 
 
-// View for single user
-// /api/user/:id
-router.post('/user-edit/:id', (req,res,next) =>{
-    User.findByIdAndUpdate(req.params.id, {
-        email: req.body.theEmail,
-        password: req.body.thePassword,
-        fullName: req.body.theFullName,
-        image: req.body.theImage,
-        propertiesOwned: [],
-        propertiesViewed: [],
-        owner: false
-    })
-        .then((response) =>{
-            if(response === null){
-                res.json({message: 'sorry we could not find this user'})
-                return;
-            }
-            res.json(response)
-        })
-        .catch((err) =>{
-            res.json(err)
-        })
-});
-
-
-
-
-
-
+// // View for single user
+// // /api/user/:id
+// router.post('/user-edit/:id', (req,res,next) =>{
+//     User.findByIdAndUpdate(req.params.id, {
+//         email: req.body.theEmail,
+//         password: req.body.thePassword,
+//         fullName: req.body.theFullName,
+//         image: req.body.theImage,
+//         propertiesOwned: [],
+//         propertiesViewed: [],
+//         owner: false
+//     })
+//         .then((response) =>{
+//             if(response === null){
+//                 res.json({message: 'sorry we could not find this user'})
+//                 return;
+//             }
+//             res.json(response)
+//         })
+//         .catch((err) =>{
+//             res.json(err)
+//         })
+// });
 
 
 module.exports = router;
