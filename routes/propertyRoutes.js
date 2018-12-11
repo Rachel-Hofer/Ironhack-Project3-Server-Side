@@ -19,6 +19,13 @@ router.get('/all-properties', (req,res,next) =>{
     })
 });
 
+// axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=${process.env.googleMapsAPI}`)
+//     .then((response)=>{
+//         console.log("RESPONSE.DATA<><><><><><><>", response.data.results[0].formatted_address)
+//     .catch((err)=>{
+//         console.log(err)
+//     })
+// })
 
 // View for all properties in specific zip code
 // /api/all-properties-by-zipCode/:zipCode
@@ -38,14 +45,17 @@ router.get('/all-properties-by-zipCode', (req,res,next) =>{
 // /api/create-property
 // tested and working
 
+
+
+
 router.post('/create-property', uploader.single('the-picture'), (req, res, next) => {
     axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}&key=${process.env.googleMapsAPI}`)
     .then((response)=>{
-        console.log(response.data)
-        //HERE IS WHERE YOU"LL CREATE THE PROPERTY WITH THE FORMATTED ADDRESS
+        console.log("RESPONSE.DATA<><><><><><><>", response.data.results[0].formatted_address)
+
         Property.create({
             image: req.file.url,
-            address: req.body.address,
+            address: response.data.results[0].formatted_address, //to get full address from Google API
             features: req.body.features,
             review: req.body.review,
             creator: req.user._id, // cannot test until logged-in
@@ -63,9 +73,12 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
                         res.json(err)
                     })
             })
-    })
             .catch((err)=>{
+                console.log(err)
             })
+    })
+    .catch((err)=>{
+    })
 })
 
 

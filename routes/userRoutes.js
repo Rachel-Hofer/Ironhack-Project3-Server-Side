@@ -25,8 +25,6 @@ router.get('/all-users', (req,res,next) =>{
 // Create user
 // /api/create-user
 router.post('/signup-user',  uploader.single('the-picture'), (req, res, next) => {
-
-
     User.findOne({email: req.body.theEmail })
     .then((findedUser) =>{
         if(findedUser!==null){
