@@ -12,8 +12,8 @@ const propertySchema = new Schema({
   averageRating: Number
   });
 
-  
+
   const Property = mongoose.model("Property", propertySchema);
-  
-  
+
+
   module.exports = Property;
