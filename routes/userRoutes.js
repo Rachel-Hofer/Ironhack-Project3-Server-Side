@@ -5,6 +5,9 @@ const passport = require('passport');
 
 const User    = require('../models/UserModel');
 
+const uploader  = require('../config/cloud');
+
+
 
 // List all users
 // /api/all-users
@@ -20,8 +23,9 @@ router.get('/all-users', (req,res,next) =>{
 
 
 // Create user
-// /api/signup-user
-router.post('/signup-user', (req, res, next) => {
+// /api/create-user
+router.post('/signup-user',  uploader.single('the-picture'), (req, res, next) => {
+
 
     User.findOne({email: req.body.theEmail })
     .then((findedUser) =>{
@@ -37,7 +41,7 @@ router.post('/signup-user', (req, res, next) => {
             email    : req.body.theEmail,
             password : theHash,
             fullName : req.body.theFullName,
-            image    : req.body.theImage        
+            image    : req.file.url        
         })
         .then((theUser) =>{
             req.login(theUser, (err) =>{
@@ -78,7 +82,7 @@ router.get('/user/:id', (req,res,next)=>{
 
 // View for single user
 // /api/user/:id
-router.post('/edit-user/:id', (req,res,next) =>{
+router.post('/edit-user/:id',uploader.single('the-picture'), (req,res,next) =>{
 
     User.findOne({email: req.body.theEmail })
     .then((findedUser)=>{
@@ -94,7 +98,7 @@ router.post('/edit-user/:id', (req,res,next) =>{
             email: req.body.theEmail,
             password: theHash,
             fullName: req.body.theFullName,
-            image: req.body.theImage,
+            image: req.file.url,
         })
         .then((updatedUser) =>{
             if(updatedUser === null){
@@ -155,6 +159,7 @@ router.get('/loggedin', (req, res, next) => {
     }
     res.status(500).json({ message: 'Unauthorized' });
 });
+
 
 
 
