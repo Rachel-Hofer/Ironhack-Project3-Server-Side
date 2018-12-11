@@ -20,7 +20,7 @@ router.get('/all-users', (req,res,next) =>{
 
 
 // Create user
-// /api/create-user
+// /api/signup-user
 router.post('/signup-user', (req, res, next) => {
 
     User.findOne({email: req.body.theEmail })
