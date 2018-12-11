@@ -1,7 +1,7 @@
 const express = require('express');
 const router  = express.Router();
 const Property = require('../models/Property');
-
+const User = require('../models/UserModel')
 
 // View for all properties
 // /api/all-properties
@@ -20,8 +20,8 @@ router.get('/all-properties', (req,res,next) =>{
 // View for all properties in specific zip code
 // /api/all-properties-by-zipCode/:zipCode
 // still working on this one **
-router.get('/all-properties', (req,res,next) =>{
-    Property.find()
+router.get('/all-properties-by-zipCode', (req,res,next) =>{
+    Property.find({zipCode : req.body.zipCode})
     .then((allProperties) =>{
         res.json(allProperties)
     })
@@ -40,8 +40,8 @@ router.post('/create-property', (req, res, next) => {
         address: req.body.address,
         zipCode: req.body.zipCode,
         features: req.body.features,
-        review: req.review._id,
-        creator: req.user._id,
+        // review: req.review._id,
+        // creator: req.user._id,
         averageRating: req.body.averageRating
     })
     .then((response) =>{
@@ -80,8 +80,8 @@ router.post('/edit-property/:id', (req,res,next) =>{
         address: req.body.address,
         zipCode: req.body.zipCode,
         features: req.body.features,
-        review: req.review._id,
-        creator: req.user._id,
+        // review: req.review._id,
+        // creator: req.user._id,
         averageRating: req.body.averageRating
     })
         .then((response) =>{
