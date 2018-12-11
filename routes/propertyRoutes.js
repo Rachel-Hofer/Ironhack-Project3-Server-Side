@@ -38,7 +38,10 @@ router.post('/create-property', (req, res, next) => {
     Property.create({
         image: req.body.image,
         address: req.body.address,
+        zipCode: req.body.zipCode,
         features: req.body.features,
+        review: req.review._id,
+        creator: req.user._id,
         averageRating: req.body.averageRating
     })
     .then((response) =>{
@@ -75,7 +78,10 @@ router.post('/edit-property/:id', (req,res,next) =>{
     Property.findByIdAndUpdate(req.params.id, {
         image: req.body.image,
         address: req.body.address,
+        zipCode: req.body.zipCode,
         features: req.body.features,
+        review: req.review._id,
+        creator: req.user._id,
         averageRating: req.body.averageRating
     })
         .then((response) =>{
