@@ -1,6 +1,8 @@
 const express = require('express');
 const router  = express.Router();
 const Property = require('../models/Property');
+const User = require('../models/UserModel');
+const axios = require('axios');
 
 const uploader  = require('../config/cloud');
 
@@ -35,23 +37,36 @@ router.get('/all-properties-by-zipCode', (req,res,next) =>{
 // Creates property
 // /api/create-property
 // tested and working
-router.post('/create-property', uploader.single('the-picture') ,(req, res, next) => {
-    Property.create({
-        image: req.file.url,
-        address: req.body.address,
-        zipCode: req.body.zipCode,
-        features: req.body.features,
-        review: req.body.review,
-        creator: req.user._id, // cannot test until logged-in
-        averageRating: req.body.averageRating
+
+router.post('/create-property', uploader.single('the-picture'), (req, res, next) => {
+    axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}&key=${process.env.googleMapsAPI}`)
+    .then((response)=>{
+        console.log(response.data)
+        //HERE IS WHERE YOU"LL CREATE THE PROPERTY WITH THE FORMATTED ADDRESS
+        Property.create({
+            image: req.file.url,
+            address: req.body.address,
+            features: req.body.features,
+            review: req.body.review,
+            creator: req.user._id, // cannot test until logged-in
+            averageRating: req.body.averageRating
+        })
+            .then((createdProperty) =>{
+                User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }}).populate('propertiesCreated')
+                    .then((response)=> {
+                        res.json(createdProperty)
+                    })
+                    .catch((err)=>{
+                        res.json(err)
+                    })
+                    .catch((err) =>{
+                        res.json(err)
+                    })
+            })
     })
-    .then((response) =>{
-        res.json(response)
-    })
-    .catch((err) =>{
-        res.json(err)
-    })
-});
+            .catch((err)=>{
+            })
+})
 
 
 // View for single property
