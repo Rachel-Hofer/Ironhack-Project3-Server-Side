@@ -69,4 +69,8 @@ app.use('/api', userRoutes);
 const propertyRoutes = require('./routes/propertyRoutes');
 app.use('/api', propertyRoutes);
 
+const reviewRoutes = require('./routes/reviewRoutes');
+app.use('/api', reviewRoutes);
+
+
 module.exports = app;

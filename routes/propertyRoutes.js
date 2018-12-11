@@ -1,7 +1,6 @@
 const express = require('express');
 const router  = express.Router();
 const Property = require('../models/Property');
-const User = require('../models/UserModel')
 
 // View for all properties
 // /api/all-properties
@@ -81,7 +80,7 @@ router.post('/edit-property/:id', (req,res,next) =>{
         zipCode: req.body.zipCode,
         features: req.body.features,
         // review: req.review._id,
-        // creator: req.user._id,
+        // creator: req.user._id, cannot test until logged-in
         averageRating: req.body.averageRating
     })
         .then((response) =>{
