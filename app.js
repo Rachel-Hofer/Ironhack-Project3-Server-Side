@@ -12,6 +12,8 @@ const path         = require('path');
 const session       = require('express-session');
 const passport      = require('passport');
 
+const cors = require('cors');
+
 require('./config/passport');
 
 mongoose
@@ -57,6 +59,11 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(cors({
+  credentials: true,
+  origin: ['http://localhost:5000']
+}));
 
 // Route links
 const index = require('./routes/index');
