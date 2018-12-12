@@ -10,6 +10,9 @@ const propertySchema = new Schema({
   creator: {type: Schema.Types.ObjectId, ref: 'User'},
   averageRating: Number,
   zipCode: Number
+  //***********************************************
+  //viewedProperty: {type: Boolean, default: false}
+  //***********************************************
   });
 
 

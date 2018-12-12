@@ -2,8 +2,9 @@ const express = require('express');
 const router  = express.Router();
 const Property = require('../models/Property');
 const User = require('../models/UserModel');
-const axios = require('axios');
+const Review = require('../models/Review');
 
+const axios = require('axios');
 const uploader  = require('../config/cloud');
 
 // GET all properties
@@ -26,7 +27,7 @@ router.get('/all-properties', (req,res,next) =>{
 
 // POST to get all properties by searched zipCode
 // /api/all-properties-searched-zipCode
-// 
+// tested and working
 router.post('/all-properties-searched-zipCode', (req,res,next) =>{
     let searchedZipCode = req.body.zipCode
     if(searchedZipCode === null){
@@ -85,9 +86,6 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
                     .catch((err)=>{
                         res.json(err)
                     })
-                    .catch((err) =>{
-                        res.json(err)
-                    })
             })
             .catch((err)=>{
                 console.log(err)
@@ -103,12 +101,12 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
 // tested and working
 router.get('/property/:id', (req,res,next)=>{
     Property.findById(req.params.id)
-        .then((response) =>{
-            if(response === null){
+        .then((theProperty) =>{
+            if(theProperty === null){
                 res.json({message: 'Sorry, you must enter a Property. Please try again.'})
                 return;
             }
-            res.json(response)
+            res.json(theProperty)
         })
         .catch((err) =>{
             res.json([{message: 'Sorry, we could not find this Property. Please try another address.'}, err])
