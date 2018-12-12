@@ -7,7 +7,9 @@ const User    = require('../models/UserModel');
 
 const uploader  = require('../config/cloud');
 
-
+// ****************************************************************
+// need to reset Property Model key: propertiesViewed back to FALSE
+// ****************************************************************
 
 // List all users
 // /api/all-users

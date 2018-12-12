@@ -18,32 +18,38 @@ router.get('/all-reviews', (req,res,next) =>{
 });
 
 
-// View for all reviews of ONE property
-// /api/all-reviews/:property._id
-// tested and working
-router.get('/all-reviews/:property._id', (req,res,next) =>{
-    Review.find()
-    .then((allReviews) =>{
-        res.json(allReviews)
-    })
-    .catch((err)=>{
-        res.json(err)
-    })
-});
+// // View for all reviews of ONE property
+// // /api/all-reviews/:property._id
+// // tested and working
+// router.get('/all-reviews/:property._id', (req,res,next) =>{
+//     Review.find()
+//     .then((allReviews) =>{
+//         res.json(allReviews)
+//     })
+//     .catch((err)=>{
+//         res.json(err)
+//     })
+// });
 
 
 // Creates review
-// /api/create-review
+// /api/create-review/:propertyID
 // tested and working
-router.post('/create-review', (req, res, next) => {
+router.post('/create-review/:propertyID', (req, res, next) => {
     Review.create({
         author: req.user._id, // cannot test until logged-in
-        property: req.body.property,
+        property: req.params.propertyID,
         message: req.body.message,
         rating: req.body.rating
     })
-    .then((response) =>{
-        res.json(response)
+    .then((createdReview) =>{
+        Property.findByIdAndUpdate({_id: req.params.propertyID}, {$push: {review: createdReview._id}}).populate('review')
+        .then((response)=>{
+            res.json(createdReview)
+        })
+        .catch((err)=>{
+            res.json(err)
+        })
     })
     .catch((err) =>{
         res.json(err)
@@ -56,8 +62,6 @@ router.post('/create-review', (req, res, next) => {
 // tested and working
 router.post('/edit-review/:id', (req,res,next) =>{
     Review.findByIdAndUpdate(req.params.id, {
-        author: req.user._id, // cannot test until logged-in
-        property: req.body.property,
         message: req.body.message,
         rating: req.body.rating
     })
@@ -84,11 +88,14 @@ router.post('/delete-review/:id', (req, res, next)=>{
             res.json({message: 'Sorry this review could not be found'})
             return;
         } 
-        res.json([
-            {message: 'Review successfully deleted'},
-            deletedReview
-        ])
-    })
+    Property.findOneAndUpdate({review: deletedReview._id}, {$pull: {review: deletedReview._id}})
+        .then((response)=>{
+            res.json([{message: 'Review successfully deleted'}, deletedReview])
+        }) 
+        })
+        .catch((err)=>{
+            res.json([{message: 'Sorry this Review could not be found'}, err])
+        })
     .catch((err)=>{
         res.json([{message: 'Sorry this Review could not be found'}, err])
     })
