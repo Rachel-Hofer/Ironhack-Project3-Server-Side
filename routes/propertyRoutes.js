@@ -69,18 +69,29 @@ router.get('/all-properties-user-zipCode', (req,res,next) =>{
 router.post('/create-property', uploader.single('the-picture'), (req, res, next) => {
     axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}&key=${process.env.googleMapsAPI}`)
     .then((response)=>{
+        getZipCode = () => {
+            let addressArray = response.data.results[0].address_components;
+            let zipCode;
+            
+            addressArray.forEach((element) =>{
+                element.long_name.length === 5 ? zipCode =  element.long_name : 'ZipCode not found'
+            })
+            // console.log("ZIPCODE<><><><><><>",zipCode)
+            return zipCode
+        }
+
         Property.create({
             image: req.file.url,
             address: response.data.results[0].formatted_address, //to get full address from Google API
             features: req.body.features,
-            review: req.body.review,
             creator: req.user._id, // cannot test until logged-in
-            averageRating: req.body.averageRating,
-            zipCode: response.data.results[0].address_components[7].long_name
+            zipCode: getZipCode(),
         })
             .then((createdProperty) =>{
+                console.log("API INFO<><><><><><>", response.data.results[0])
                 User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }}).populate('propertiesCreated')
                     .then((response)=> {
+                        console.log('USER UPDATE<><><><><><><>')
                         res.json(createdProperty)
                     })
                     .catch((err)=>{
