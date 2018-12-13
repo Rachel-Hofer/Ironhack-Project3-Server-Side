@@ -89,7 +89,7 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
         })
             .then((createdProperty) =>{
                 console.log("API INFO<><><><><><>", response.data.results[0])
-                User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }}).populate('propertiesCreated')
+                User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }})
                     .then((response)=> {
                         console.log('USER UPDATE<><><><><><><>')
                         res.json(createdProperty)

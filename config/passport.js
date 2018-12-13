@@ -4,6 +4,7 @@ const passport      = require('passport');
 
 
 const User          = require('../models/UserModel');
+const Property      = require('../models/Property');
 // import the user model
 
 
@@ -14,14 +15,23 @@ passport.serializeUser((loggedInUser, cb) => {
 });
 
 passport.deserializeUser((userIdFromSession, cb) => {
-  User.findById(userIdFromSession, (err, userDocument) => {
-    if (err) {
-      cb(err);
-      return;
-    }
+
+  User.findById(userIdFromSession).populate({path: 'propertiesCreated', model: 'Property'})
+  .then((userDocument)=>{
+    
+
+
     cb(null, userDocument);
-  });
+  })
+  .catch((err)=>{
+    cb(err);
+    return;
+  })
 });
+  
+  
+  
+
 
 
 passport.use(new LocalStrategy({

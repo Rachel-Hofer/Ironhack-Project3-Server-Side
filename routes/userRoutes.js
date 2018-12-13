@@ -26,7 +26,7 @@ router.get('/all-users', (req,res,next) =>{
 
 // Create user
 // /api/signup-user
-router.post('/signup-user',  uploader.single('the-picture'), (req, res, next) => {
+router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, next) => {
     User.findOne({email: req.body.theEmail })
     .then((findedUser) =>{
         if(findedUser!==null){
@@ -67,7 +67,7 @@ router.post('/signup-user',  uploader.single('the-picture'), (req, res, next) =>
 // View for single user
 // /api/user/:id
 router.get('/user/:id', (req,res,next)=>{
-    User.findById(req.params.id)
+    User.findById(req.params.id).populate('propertiesCreated')
         .then((response) =>{
             if(response === null){
                 res.json({message: 'sorry we could not find this User'})
