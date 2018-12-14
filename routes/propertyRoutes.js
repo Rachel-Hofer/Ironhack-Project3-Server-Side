@@ -161,21 +161,25 @@ router.post('/edit-property/:id', uploader.single('the-picture') , (req,res,next
 // /api/delete-property/:id
 // tested and working
 router.post('/delete-property/:id', (req, res, next)=>{
-    Property.findByIdAndRemove(req.params.id)
-    .then((deletedProperty)=>{
-        if(deletedProperty === null){
-            res.json({message: 'sorry this property could not be found'})
-            return;
-        } 
 
-        res.json([
-            {message: 'Property successfully deleted'},
-            deletedProperty
-        ])
-    })
-    .catch((err)=>{
-        res.json([{message: 'sorry this property could not be found'}, err])
-    })
+    Property.findByIdAndRemove(req.params.id)
+        .then((deletedProperty)=>{
+                res.json([
+                    {message: 'Property successfully deleted'},
+                    deletedProperty
+                ])
+                User.findByIdAndUpdate(req.user._id, {$pull: {propertiesCreated :deletedProperty._id }})
+                        .then((response)=> {
+                            console.log('USER UPDATE<><><><><><><>', response)
+                            res.json(deletedProperty)
+                        })
+                        .catch((err)=>{
+                            res.json(err)
+                        })  
+        })      
+        .catch((err)=>{
+            res.json([{message: 'sorry this property could not be found'}, err])
+        })    
 });  // end of delete property route
 
 
