@@ -18,18 +18,18 @@ router.get('/all-reviews', (req,res,next) =>{
 });
 
 
-// // View for all reviews of ONE property
-// // /api/all-reviews/:property._id
-// // tested and working
-// router.get('/all-reviews/:property._id', (req,res,next) =>{
-//     Review.find()
-//     .then((allReviews) =>{
-//         res.json(allReviews)
-//     })
-//     .catch((err)=>{
-//         res.json(err)
-//     })
-// });
+// View for all reviews of ONE property
+// /api/all-reviews/:property._id
+// tested and working
+router.get('/review/:id', (req,res,next) =>{
+    Review.findById(req.params.id)
+    .then((theReview) =>{
+        res.json(theReview)
+    })
+    .catch((err)=>{
+        res.json(err)
+    })
+});
 
 
 // Creates review
@@ -100,6 +100,7 @@ router.post('/delete-review/:id', (req, res, next)=>{
         res.json([{message: 'Sorry this Review could not be found'}, err])
     })
 })
+
 
 
 module.exports = router;
