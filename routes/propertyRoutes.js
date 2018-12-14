@@ -111,7 +111,7 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
 // /api/property/:id
 // tested and working
 router.get('/property/:id', (req,res,next)=>{
-    Property.findById(req.params.id)
+    Property.findById(req.params.id).populate({path: 'review', model: 'Review'})
         .then((theProperty) =>{
             if(theProperty === null){
                 res.json({message: 'Sorry, you must enter a Property. Please try again.'})
