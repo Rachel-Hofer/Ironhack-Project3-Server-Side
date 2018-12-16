@@ -24,7 +24,6 @@ router.get('/all-users', (req,res,next) =>{
 });
 
 
-
 // Create user
 // /api/signup-user
 router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, next) => {
@@ -62,7 +61,6 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
         res.json({message: 'something is really bad'})
     })
 });
-
 
 
 // View for single user
