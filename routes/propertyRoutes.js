@@ -20,6 +20,19 @@ router.get('/all-properties', (req,res,next) =>{
     })
 });
 
+router.post('/add-property-to-user/:id', (req,res,next) =>{
+    Property.findById(req.params.id)
+    .then((foundProperty) =>{
+        User.findByIdAndUpdate(req.user._id, {$push: {propertiesViewed :foundProperty._id }})
+        .then(( foundUser ) =>{
+            res.json(propertiesViewed)
+        })
+        .catch((err) =>{
+            res.json(err)
+        })
+    })
+})
+
 // *************************************************************************************
 // use same GET for all properties(above), then SORT ON THE FRONT END by average Rating
 // *************************************************************************************

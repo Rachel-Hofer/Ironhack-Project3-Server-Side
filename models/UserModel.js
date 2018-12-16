@@ -11,7 +11,7 @@ const userSchema = new Schema({
     zipCode: Number,
     profilePic: {type: String, default: "http://alumni.crg.eu/sites/default/files/default_images/default-picture_0_0.png"},
     propertiesCreated: {type: [Schema.Types.ObjectId], ref: 'Property'},
-    propertiesViewed: {type: [Schema.Types.ObjectId], default : [], ref: 'Property'},
+    propertiesViewed:  {type: [Schema.Types.ObjectId],  ref: 'Property'},
   });
 
   
