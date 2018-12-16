@@ -68,7 +68,7 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
 // View for single user
 // /api/user/:id
 router.get('/user/:id', (req,res,next)=>{
-    User.findById(req.params.id).populate('propertiesCreated')
+    User.findById(req.params.id)
         .then((response) =>{
             if(response === null){
                 res.json({message: 'sorry we could not find this User'})
