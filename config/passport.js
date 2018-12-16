@@ -16,7 +16,7 @@ passport.serializeUser((loggedInUser, cb) => {
 
 passport.deserializeUser((userIdFromSession, cb) => {
 
-  User.findById(userIdFromSession).populate({path: 'propertiesCreated', model: 'Property'})
+  User.findById(userIdFromSession).populate({path: 'propertiesCreated', model: 'Property'}).populate({path: 'propertiesViewed', model: 'Property'})
   .then((userDocument)=>{
     
 
