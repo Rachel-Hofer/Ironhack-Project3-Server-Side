@@ -43,9 +43,11 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
                         element.long_name.length === 5 ? zipCode =  element.long_name : 'ZipCode not found'
                         
                     })
-                    console.log("LATLONG<><><><>", )
+                    
                     return zipCode
                 }
+                console.log("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", response.data)
+                console.log(req.body.address)
 
                 User.create({
                     email    : req.body.theEmail,
