@@ -89,9 +89,10 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
             addressArray.forEach((element) =>{
                 element.long_name.length === 5 ? zipCode =  element.long_name : 'ZipCode not found'
             })
-            // console.log("ZIPCODE<><><><><><>",zipCode)
+            console.log("LOOKING FOR LONG/LAT<><><><><><>", response.data.results[0].geometry.location)
+            // this is what 'response.data.results[0].geometry.location' returns:  {lat: 40.832005, lng: -73.8966725}
             return zipCode
-        }
+        }        
 
         Property.create({
             image: req.file.url,
@@ -99,7 +100,9 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
             features: req.body.features,
             creator: req.user._id, // cannot test until logged-in
             zipCode: getZipCode(),
+            
         })
+
             .then((createdProperty) =>{
                 console.log("API INFO<><><><><><>", response.data.results[0])
                 User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }})

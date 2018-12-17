@@ -42,7 +42,7 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
             password : theHash,
             fullName : req.body.theFullName,
             image    : req.file.url,
-            zipCode  : req.body.zipCode    
+            zipCode  : req.body.zipCode,   
         })
         .then((theUser) =>{
             req.login(theUser, (err) =>{
