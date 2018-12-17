@@ -2,14 +2,10 @@ const express  = require('express');
 const router   = express.Router();
 const bcrypt   = require('bcryptjs');
 const passport = require('passport');
-
+const axios = require('axios');
 const User    = require('../models/UserModel');
-
 const uploader  = require('../config/cloud');
 
-// ****************************************************************
-// need to reset Property Model key: propertiesViewed back to FALSE
-// ****************************************************************
 
 // List all users
 // /api/all-users
@@ -37,31 +33,49 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
         const salt     = bcrypt.genSaltSync(10);
         const theHash  = bcrypt.hashSync(req.body.thePassword, salt )
 
-        User.create({
-            email    : req.body.theEmail,
-            password : theHash,
-            fullName : req.body.theFullName,
-            image    : req.file.url,
-            zipCode  : req.body.zipCode,   
-        })
-        .then((theUser) =>{
-            req.login(theUser, (err) =>{
-                if(err) { 
-                    res.status(500).json({message : 'Login after signup went bad'})
-                    return
-                 }
-                 res.json(theUser);
-            })
-        })
-        .catch((err) =>{
-            res.json({ message: 'something went wrong with creating user'})
-        })
-    })
-    .catch((err) =>{
-        res.json({message: 'something is really bad'})
-    })
-});
+        axios.post(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}&key=${process.env.googleMapsAPI}`)
+            .then((response)=>{
+                getZipCode = () => {
+                    let addressArray = response.data.results[0].address_components;
+                    let zipCode;
+                    
+                    addressArray.forEach((element) =>{
+                        element.long_name.length === 5 ? zipCode =  element.long_name : 'ZipCode not found'
+                        
+                    })
+                    console.log("LATLONG<><><><>", )
+                    return zipCode
+                }
 
+                User.create({
+                    email    : req.body.theEmail,
+                    password : theHash,
+                    fullName : req.body.theFullName,
+                    image    : req.file.url,
+                    address  : response.data.results[0].formatted_address,
+                    zipCode  : getZipCode(),
+                    longLat  : response.data.results[0].geometry.location
+                })
+
+                    .then((theUser) =>{
+                        console.log("USER", theUser)
+                        req.login(theUser, (err) =>{
+                            if(err) { 
+                                res.status(500).json({message : 'Login after signup went bad'})
+                                return
+                            }
+                            res.json(theUser);
+                        })
+                    })
+                    .catch((err) =>{
+                        res.json({ message: 'something went wrong with creating user'})
+                    })
+            })
+            .catch((err) =>{
+                res.json({message: 'something is really bad'})
+            })
+    })
+})
 
 // View for single user
 // /api/user/:id

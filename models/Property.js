@@ -9,10 +9,8 @@ const propertySchema = new Schema({
   review: {type: [Schema.Types.ObjectId], ref: 'Review'},
   creator: {type: Schema.Types.ObjectId, ref: 'User'},
   averageRating: Number,
-  zipCode: String
-  //***********************************************
-  //viewedProperty: {type: Boolean, default: false}
-  //***********************************************
+  zipCode: String,
+  latLong: Object
   });
 
 

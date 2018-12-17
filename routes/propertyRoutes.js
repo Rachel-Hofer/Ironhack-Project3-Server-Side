@@ -33,10 +33,6 @@ router.post('/add-property-to-user/:id', (req,res,next) =>{
     })
 })
 
-// *************************************************************************************
-// use same GET for all properties(above), then SORT ON THE FRONT END by average Rating
-// *************************************************************************************
-
 
 // POST to get all properties by searched zipCode
 // /api/all-properties-searched-zipCode
@@ -88,9 +84,9 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
             
             addressArray.forEach((element) =>{
                 element.long_name.length === 5 ? zipCode =  element.long_name : 'ZipCode not found'
+                
             })
-            console.log("LOOKING FOR LONG/LAT<><><><><><>", response.data.results[0].geometry.location)
-            // this is what 'response.data.results[0].geometry.location' returns:  {lat: 40.832005, lng: -73.8966725}
+            console.log("LATLONG<><><><>", )
             return zipCode
         }        
 
@@ -100,14 +96,14 @@ router.post('/create-property', uploader.single('the-picture'), (req, res, next)
             features: req.body.features,
             creator: req.user._id, // cannot test until logged-in
             zipCode: getZipCode(),
+            latLong: response.data.results[0].geometry.location
             
         })
 
             .then((createdProperty) =>{
-                console.log("API INFO<><><><><><>", response.data.results[0])
+                console.log("CREATED PROPERTY------------------", createdProperty)
                 User.findByIdAndUpdate(req.user._id, {$push: {propertiesCreated :createdProperty._id }})
                     .then((response)=> {
-                        console.log('USER UPDATE<><><><><><><>')
                         res.json(createdProperty)
                     })
                     .catch((err)=>{
