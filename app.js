@@ -66,8 +66,7 @@ app.use(cors({
 }));
 
 // Route links
-const index = require('./routes/index');
-app.use('/', index);
+
 
 const userRoutes = require('./routes/userRoutes');
 app.use('/api', userRoutes);
