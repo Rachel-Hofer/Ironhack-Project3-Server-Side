@@ -62,7 +62,7 @@ app.use(passport.session());
 
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:5000']
+  origin: ['http://localhost:5000', 'https://merry-and-bright-app.herokuapp.com']
 }));
 
 // Route links
