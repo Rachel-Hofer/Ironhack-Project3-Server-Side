@@ -57,10 +57,8 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
                     address  : response.data.results[0].formatted_address,
                     zipCode  : getZipCode(),
                     longLat  : response.data.results[0].geometry.location
-                })
-
-                    .then((theUser) =>{
-                        console.log("USER", theUser)
+                }).then((theUser) =>{
+                        console.log("*************************************", theUser)
                         req.login(theUser, (err) =>{
                             if(err) { 
                                 res.status(500).json({message : 'Login after signup went bad'})
@@ -74,6 +72,7 @@ router.post('/signup-user',  uploader.single('the-user-picture'), (req, res, nex
                     })
             })
             .catch((err) =>{
+                console.log('1111111111111', err)
                 res.json({message: 'something is really bad'})
             })
     })
@@ -173,6 +172,7 @@ router.get('/loggedin', (req, res, next) => {
         res.json(req.user);
         return;
     }
+    console.log("ahahhahahhahah super bad")
     res.status(500).json({ message: 'Unauthorized' });
 });
 
