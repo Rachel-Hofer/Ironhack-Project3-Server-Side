@@ -153,16 +153,31 @@ router.post('/edit-property/:id', uploader.single('the-picture') , (req,res,next
             // console.log("ZIPCODE<><><><><><>",zipCode)
             return zipCode
         }
-
-        Property.findByIdAndUpdate(req.params.id, {
-            image: req.file.url,
+        let updatedContent = {};
+        if(req.file===undefined) {
+            updatedContent = {
             address: response.data.results[0].formatted_address,
             features: req.body.features,
-            review: req.body.review,
             creator: req.user._id, // cannot test until logged-in
-            averageRating: req.body.averageRating,
-            zipCode: getZipCode()
-    })
+            zipCode: getZipCode(),
+            latLong: response.data.results[0].geometry.location
+            }
+        }
+        else{
+            updatedContent = {
+                image: req.file.url,
+                address: response.data.results[0].formatted_address,
+                features: req.body.features,
+                creator: req.user._id, // cannot test until logged-in
+                zipCode: getZipCode(),
+                latLong: response.data.results[0].geometry.location
+                }
+        }
+
+
+
+
+        Property.findByIdAndUpdate(req.params.id, updatedContent  )
         .then((response) =>{
             if(response === null){ 
                 res.json({message: 'Sorry, you must enter a Property. Please try again.'})
