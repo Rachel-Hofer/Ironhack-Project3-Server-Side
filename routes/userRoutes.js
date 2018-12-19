@@ -136,21 +136,21 @@ router.post('/edit-user/:id',uploader.single('the-picture'), (req,res,next) =>{
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, theUser, failureDetails) => {
         if (err) {
-            res.json({ message: 'Something went wrong authenticating user' });
+            res.status(400).json({ message: 'Something went wrong authenticating user' });
             return;
         }
     
         if (!theUser) {
             // "failureDetails" contains the error messages
             // from our logic in "LocalStrategy" { message: '...' }.
-            res.json(failureDetails);
+            res.status(400).json(failureDetails);
             return;
         }
 
         // save user in session
         req.login(theUser, (err) => {
             if (err) {
-                res.json({ message: 'Session save went bad.' });
+                res.status(500).json({ message: 'Session save went bad.' });
                 return;
             }
 
